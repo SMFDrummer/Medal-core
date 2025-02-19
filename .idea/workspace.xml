@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="2797e0c0-c1e7-43ff-b9ce-6bd3de0f7247" name="更改" comment="Initial commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medal-core-android/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/medal-core-android/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medal-core/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/medal-core/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -282,7 +284,7 @@
       <workItem from="1739846016495" duration="22477000" />
       <workItem from="1739930517634" duration="12716000" />
       <workItem from="1739956329278" duration="1782000" />
-      <workItem from="1739958778600" duration="38000" />
+      <workItem from="1739958778600" duration="558000" />
     </task>
     <task id="LOCAL-00001" summary="2025 - 02 - 15">
       <option name="closed" value="true" />
@@ -380,7 +382,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739958624143</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1739959183971</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1739959183971</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

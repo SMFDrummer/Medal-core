@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.mavenPublish)
     signing
+    alias(libs.plugins.kotlinPluginSerialization)
     alias(libs.plugins.googleDevtoolsKsp)
 }
 

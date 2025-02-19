@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm")
     alias(libs.plugins.mavenPublish)
     signing
+    alias(libs.plugins.kotlinPluginSerialization)
     alias(libs.plugins.googleDevtoolsKsp)
 }
 
