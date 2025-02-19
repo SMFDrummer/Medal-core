@@ -1,0 +1,94 @@
+[versions]
+agp = "8.6.1"
+kotlin = "2.1.0"
+kotlinxDatetime = "0.6.1"
+kotlinxSerializationJSON = "1.8.0"
+kotlinxCoroutines = "1.10.1"
+ksp = "2.1.0-1.0.29"
+mavenPublish = "0.30.0"
+
+# Ktor
+ktor = "3.0.3"
+# Ktor - logback
+logback = "1.5.6"
+logbackAndroid = "3.0.0"
+
+# Arrow
+arrow = "2.0.1"
+# Arrow - jsonpath
+kotlinxSerializationJSONPath = "2.0.0-alpha.1"
+
+# Bouncy Castle
+bcprov = "1.78.1"
+
+# Reflections
+reflections = "0.10.2"
+
+# Kronos - dataBase
+kronos = "0.0.1"
+apacheCommonsDbcp2 = "2.13.0"
+sqliteJdbc = "3.48.0.0"
+
+[libraries]
+kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinxDatetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinxSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJSON" }
+kotlinxCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinxCoroutinesAndroid = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinReflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+
+# Ktor
+ktorClientCore = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktorClientCIO = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+# Ktor - logback
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logbackAndroid = { module = "com.github.tony19:logback-android", version.ref = "logbackAndroid" }
+
+# Arrow
+arrowCore = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
+arrowCoreSerialization = { module = "io.arrow-kt:arrow-core-serialization", version.ref = "arrow" }
+arrowFxCoroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow" }
+arrowResilience = { module = "io.arrow-kt:arrow-resilience", version.ref = "arrow" }
+arrowOptics = { module = "io.arrow-kt:arrow-optics", version.ref = "arrow" }
+arrowOpticsCompose = { module = "io.arrow-kt:arrow-optics-compose", version.ref = "arrow" }
+arrowOpticsKspPlugin = { module = "io.arrow-kt:arrow-optics-ksp-plugin", version.ref = "arrow" }
+arrowAtomic = { module = "io.arrow-kt:arrow-atomic", version.ref = "arrow" }
+arrowCollectors = { module = "io.arrow-kt:arrow-collectors", version.ref = "arrow" }
+arrowEval = { module = "io.arrow-kt:arrow-eval", version.ref = "arrow" }
+arrowCache4k = { module = "io.arrow-kt:arrow-cache4k", version.ref = "arrow" }
+# Arrow - jsonpath
+kotlinxSerializationJsonPath = { module = "io.github.nomisrev:kotlinx-serialization-jsonpath", version.ref = "kotlinxSerializationJSONPath" }
+
+# Bouncy Castle
+bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bcprov" }
+
+# Reflections
+reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
+
+# Kronos - dataBase
+kronosCore = { module = "com.kotlinorm:kronos-core", version.ref = "kronos" }
+kronosJdbcWrapper = { module = "com.kotlinorm:kronos-jdbc-wrapper", version.ref = "kronos" }
+apacheCommonsDbcp2 = { module = "org.apache.commons:commons-dbcp2", version.ref = "apacheCommonsDbcp2" }
+sqliteJdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqliteJdbc" }
+
+
+# Libraries can be bundled together for easier import
+[bundles]
+kotlinxEcosystem = ["kotlinxDatetime", "kotlinxSerialization", "kotlinxCoroutines", "kotlinReflect"]
+
+ktor = ["ktorClientCore", "ktorClientCIO"]
+
+arrow = ["arrowCore", "arrowCoreSerialization", "arrowAtomic", "arrowCache4k", "arrowCollectors", "arrowEval", "arrowFxCoroutines", "arrowOptics", "arrowResilience", "kotlinxSerializationJsonPath"]
+
+medalDependency = ["bcprov", "reflections"]
+medalAndroidAddon = ["kotlinxCoroutinesAndroid", "logbackAndroid", "arrowOpticsCompose"]
+
+kronos = ["kronosCore", "kronosJdbcWrapper", "apacheCommonsDbcp2", "sqliteJdbc"]
+
+[plugins]
+kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+googleDevtoolsKsp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kronosGradlePlugin = { id = "com.kotlinorm.kronos-gradle-plugin", version.ref = "kronos" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
