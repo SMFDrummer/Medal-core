@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2797e0c0-c1e7-43ff-b9ce-6bd3de0f7247" name="更改" comment="Update README">
-      <change beforePath="$PROJECT_DIR$/jitpack.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/src/commonMain/kotlin/packet/Registry.kt" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/commonMain/kotlin/packet/Registry.kt" afterDir="false" />
+    <list default="true" id="2797e0c0-c1e7-43ff-b9ce-6bd3de0f7247" name="更改" comment="Initial commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,6 +105,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;Gradle.Medal-core [clean].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.Medal-core [publishMavenPublicationToMavenLocal].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.Medal-core [publishToMavenLocal].executor&quot;: &quot;Run&quot;,
@@ -281,7 +281,8 @@
       <workItem from="1739781469595" duration="7869000" />
       <workItem from="1739846016495" duration="22477000" />
       <workItem from="1739930517634" duration="12716000" />
-      <workItem from="1739956329278" duration="1305000" />
+      <workItem from="1739956329278" duration="1782000" />
+      <workItem from="1739958778600" duration="38000" />
     </task>
     <task id="LOCAL-00001" summary="2025 - 02 - 15">
       <option name="closed" value="true" />
@@ -363,7 +364,23 @@
       <option name="project" value="LOCAL" />
       <updated>1739950187861</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1739958309172</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1739958309172</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1739958624143</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1739958624143</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -389,7 +406,8 @@
     <MESSAGE value="2025 - 02 - 18" />
     <MESSAGE value="2025 - 02 - 19" />
     <MESSAGE value="Update README" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update README" />
+    <MESSAGE value="Initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
