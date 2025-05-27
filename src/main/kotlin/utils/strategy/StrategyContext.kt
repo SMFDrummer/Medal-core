@@ -8,7 +8,7 @@ import kotlinx.serialization.json.JsonPrimitive
 
 interface ContextCallback {
     // 数据包执行状态回调
-    fun onPacketStart(packetId: String)
+    fun onPacketStart(packetId: String, request: JsonObject)
     fun onPacketSuccess(packetId: String, response: JsonObject)
     fun onPacketFailure(packetId: String, error: StrategyException)
     fun onPacketRetry(packetId: String, attempt: Int, error: StrategyException)

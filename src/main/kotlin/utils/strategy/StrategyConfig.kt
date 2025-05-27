@@ -26,7 +26,7 @@ data class StrategyConfig(
         val onFailure: JsonPrimitive? = null,
     )
 
-    override fun toString(): String = "版本：${version} -> 描述：${description}"
+    override fun toString(): String = "版本：${version}\n描述：${description}"
 
     fun toJsonString(): String = jsonWith(
         JsonFeature.ImplicitNulls,

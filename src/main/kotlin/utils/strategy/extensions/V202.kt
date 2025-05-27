@@ -35,8 +35,9 @@ fun StrategyBuilder.V202(userId: String? = null, token: String? = null) = packet
         )
 
         extract {
-            "ui" from "ui"
+            "pi" from "ui"
             "sk" from "sk"
+            "ui" from "ui"
         }
     } else {
         parse(

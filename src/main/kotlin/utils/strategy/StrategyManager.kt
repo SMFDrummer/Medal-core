@@ -31,7 +31,6 @@ class StrategyManager internal constructor(
     internal suspend fun executePackets(startIndex: Int = 0): Either<StrategyException, Boolean> = either {
         for (packet in strategyConfig.packets.drop(startIndex)) {
             if (packet.repeat < 1) continue
-            context.callback?.onPacketStart(packet.i)
 
             val success = handleRepeat(packet).fold(
                 {
@@ -93,6 +92,7 @@ class StrategyManager internal constructor(
                 renderTemplate(value) { context.resolve(it) }
             }
             val result = (packet.i to JsonObject(modified))
+                .apply { context.callback?.onPacketStart(this.first, this.second) }
                 .sendPacket(packet).bind()
                 .handleResponse(packet).bind()
             if (!result) {
