@@ -8,6 +8,7 @@ import io.github.smfdrummer.network.decryptTwPay
 import io.github.smfdrummer.network.encryptTwPay
 import io.github.smfdrummer.network.model.Login
 import io.github.smfdrummer.network.model.headString
+import io.github.smfdrummer.utils.json.getInt
 import io.github.smfdrummer.utils.json.getString
 import io.github.smfdrummer.utils.json.parseObject
 import io.ktor.client.request.*
@@ -36,7 +37,9 @@ object Login {
             200 -> {
                 val parse = it.bodyAsText().decryptTwPay().parseObject()
                 if (parse.getString("resultCode") == "0000") {
-                    phoneOrUserId to parse.getString("content")!!.decryptTwPay().parseObject().getString("token")!!
+                    with(parse.getString("content")!!.decryptTwPay().parseObject()) {
+                        getInt("userId")!!.toString() to getString("token")!!
+                    }
                 } else error(parse.getString("content") ?: "未知错误")
             }
 
