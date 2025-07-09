@@ -52,7 +52,7 @@ object Requester {
                 formData {
                     append("req", this@build.first)
                     append("e", this@build.second)
-                    append("ev", 2)
+                    append("ev", CryptoDefaults.cryptoType)
                 }
             )
         )

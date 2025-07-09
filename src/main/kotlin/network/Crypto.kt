@@ -30,13 +30,18 @@ import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.DESKeySpec
 import javax.crypto.spec.IvParameterSpec
 
-const val MD5KEY = "talkwebCert"
-const val APPKEY = "b0b29851-b8a1-4df5-abcb-a8ea158bea20"
+object CryptoDefaults {
+    const val MD5KEY = "talkwebCert"
+    const val APPKEY = "b0b29851-b8a1-4df5-abcb-a8ea158bea20"
 
-internal val DATA = byteArrayOf(
-    0x56, 0x78, 0x53, 0x39, 0x52, 0x6D, 0x37, 0x66,
-    0x38, 0x67, 0x4B, 0x54, 0x5F, 0x36, 0x33, 0x38
-)
+    var cryptoType = 1
+
+    val cryptoPairs = listOf(
+        "" to "",
+        "`jou*" to ")xoj'",
+        "VxS9Rm7f" to "8gKT_638"
+    )
+}
 
 fun Pair<String, JsonObject>.encryptRequest(): Pair<String, String> = Crypto.Request.encrypt(this)
 fun Pair<String, String>.decryptRequest(): Pair<String, JsonObject> = Crypto.Request.decrypt(this)
@@ -189,8 +194,11 @@ internal object Crypto {
             rijndael(Base64.decrypt(data), getKey(identifier), getIv(identifier), false)
     }
 
-    internal fun getKey(identifier: String): ByteArray =
-        getMD5("${String(DATA.copyOfRange(0, 8))}${identifier}${String(DATA.copyOfRange(8, 16))}").encodeToByteArray()
+    internal fun getKey(identifier: String): ByteArray = with(CryptoDefaults) {
+        val cryptoPair = cryptoPairs[cryptoType]
+        getMD5("${cryptoPair.first}${identifier}${cryptoPair.second}").encodeToByteArray()
+    }
+
 
     internal fun getIv(identifier: String): ByteArray {
         val key = getKey(identifier).decodeToString()

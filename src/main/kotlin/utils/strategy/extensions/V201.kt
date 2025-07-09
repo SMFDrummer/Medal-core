@@ -11,13 +11,14 @@ fun StrategyBuilder.V201(udid: String) = packet {
     retry = 4
 
     val di = getMD5(udid)
+    val random = (1000000000..2000000000).random()
     parse(
         """
         {
           "cv": "${platformConfig.channel.version}",
           "di": "$di",
-          "r": "${(1000000000..2000000000).random()}",
-          "s": "${getMD5(di + r + "B7108D8B5TABE")}"
+          "r": "$random",
+          "s": "${getMD5(di + random + "B7108D8B5TABE")}"
         }
         """.trimIndent()
     )
