@@ -34,7 +34,8 @@ object CryptoDefaults {
     const val MD5KEY = "talkwebCert"
     const val APPKEY = "b0b29851-b8a1-4df5-abcb-a8ea158bea20"
 
-    var cryptoType = 1
+    @Volatile
+    var cryptoType = 2
 
     val cryptoPairs = listOf(
         "" to "",
