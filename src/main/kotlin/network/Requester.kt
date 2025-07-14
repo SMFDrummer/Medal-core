@@ -15,6 +15,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.milliseconds
 
 object Requester {
@@ -43,24 +44,46 @@ object Requester {
         }
     }
 
-    private suspend fun waiting() = delay(interval)
+    // 仅用于 ANDROID 交替请求计数
+    private val androidCounter = AtomicInteger(0)
 
-    private suspend fun Pair<String, String>.build(host: GameHost): HttpResponse = client.post(host.url) {
-        header(HttpHeaders.ContentType, ContentType.MultiPart.FormData)
-        setBody(
-            MultiPartFormDataContent(
-                formData {
-                    append("req", this@build.first)
-                    append("e", this@build.second)
-                    append("ev", CryptoDefaults.cryptoType)
-                }
+    private suspend fun waiting(host: GameHost) {
+        if (host == GameHost.IOS) {
+            delay(interval)
+        }
+        // ANDROID 不等待
+    }
+
+    // 交替构造 ANDROID 的 url
+    private fun getAndroidUrl(baseUrl: String): String {
+        val count = androidCounter.getAndIncrement()
+        // 每 30 次循环一次，前 15 次用 baseUrl，后 15 次用 baseUrl/index.php
+        return if ((count % 30) < 15) baseUrl else "$baseUrl/index.php"
+    }
+
+    private suspend fun Pair<String, String>.build(host: GameHost): HttpResponse {
+        val url = if (host == GameHost.ANDROID) {
+            getAndroidUrl(host.url)
+        } else {
+            host.url
+        }
+        return client.post(url) {
+            header(HttpHeaders.ContentType, ContentType.MultiPart.FormData)
+            setBody(
+                MultiPartFormDataContent(
+                    formData {
+                        append("req", this@build.first)
+                        append("e", this@build.second)
+                        append("ev", CryptoDefaults.cryptoType)
+                    }
+                )
             )
-        )
+        }
     }
 
     suspend fun Pair<String, String>.request(host: GameHost): String = withContext(Dispatchers.IO) {
         try {
-            waiting()
+            waiting(host)
             build(host).let {
                 when (it.status.value) {
                     200 -> it.bodyAsText()
@@ -77,7 +100,7 @@ object Requester {
 
     suspend fun post(urlString: String, block: HttpRequestBuilder.() -> Unit = {}): HttpResponse =
         withContext(Dispatchers.IO) {
-            waiting()
+            delay(interval)
             client.post(urlString, block)
         }
 }
