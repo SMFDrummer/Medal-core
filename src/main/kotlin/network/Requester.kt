@@ -100,7 +100,7 @@ object Requester {
 
     suspend fun post(urlString: String, block: HttpRequestBuilder.() -> Unit = {}): HttpResponse =
         withContext(Dispatchers.IO) {
-            delay(interval)
+            delay(3000.milliseconds)
             client.post(urlString, block)
         }
 }
