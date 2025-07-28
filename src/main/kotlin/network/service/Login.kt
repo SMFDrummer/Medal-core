@@ -1,8 +1,8 @@
 package io.github.smfdrummer.network.service
 
 import io.github.smfdrummer.enums.TalkwebHost
+import io.github.smfdrummer.network.Crypto.APPKEY
 import io.github.smfdrummer.network.Crypto.getMD5
-import io.github.smfdrummer.network.CryptoDefaults.APPKEY
 import io.github.smfdrummer.network.Requester
 import io.github.smfdrummer.network.decryptTwPay
 import io.github.smfdrummer.network.encryptTwPay

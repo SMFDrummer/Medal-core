@@ -195,6 +195,16 @@ class PacketBuilder {
     private val t: MutableMap<String, JsonElement> = linkedMapOf()
 
     /**
+     * 加密版本
+     *
+     * ```
+     * ev = 1 // OLD
+     * ev = 2 // NEW - default
+     * ```
+     */
+    var ev: Int = 2
+
+    /**
      * 数据包循环发送次数，如遇 [r] 不匹配会提前被终止
      *
      * ```
@@ -311,6 +321,7 @@ class PacketBuilder {
         i = i,
         r = r,
         t = t,
+        ev = ev,
         repeat = repeat,
         retry = retry,
         extract = extract,

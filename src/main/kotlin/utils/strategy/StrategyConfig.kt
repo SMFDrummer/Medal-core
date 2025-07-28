@@ -1,12 +1,10 @@
 package io.github.smfdrummer.utils.strategy
 
 import io.github.smfdrummer.utils.json.JsonFeature
-import io.github.smfdrummer.utils.json.fromJson
 import io.github.smfdrummer.utils.json.jsonWith
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
-import org.intellij.lang.annotations.Language
 
 @Serializable
 data class StrategyConfig(
@@ -19,6 +17,7 @@ data class StrategyConfig(
         val i: String,
         val r: Int = 0,
         val t: MutableMap<String, JsonElement> = linkedMapOf(),
+        val ev: Int = 2,
         val repeat: Int = 1,
         val retry: Int = 0,
         val extract: Map<String, String> = emptyMap(),
@@ -34,8 +33,3 @@ data class StrategyConfig(
         JsonFeature.PrettyPrint
     ).encodeToString(this)
 }
-
-fun StrategyConfig.of(@Language("JSON") strategyJsonString: String) = strategyJsonString.fromJson<StrategyConfig>(
-    JsonFeature.ImplicitNulls,
-    JsonFeature.EncodeDefaults,
-)

@@ -8,13 +8,14 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import network.Former
+import network.TalkwebForm
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -61,27 +62,19 @@ object Requester {
         return if ((count % 30) < 15) baseUrl else "$baseUrl/index.php"
     }
 
-    private suspend fun Pair<String, String>.build(host: GameHost): HttpResponse {
+    private suspend fun TalkwebForm.build(host: GameHost): HttpResponse {
         val url = if (host == GameHost.ANDROID) {
             getAndroidUrl(host.url)
         } else {
             host.url
         }
         return client.post(url) {
-            header(HttpHeaders.ContentType, ContentType.MultiPart.FormData)
-            setBody(
-                MultiPartFormDataContent(
-                    formData {
-                        append("req", this@build.first)
-                        append("e", this@build.second)
-                        append("ev", CryptoDefaults.cryptoType)
-                    }
-                )
-            )
+            header(HttpHeaders.ContentType, ContentType.MultiPart.FormData.withParameter("boundary", Former.BOUNDARY))
+            setBody(Former.encode(this@build))
         }
     }
 
-    suspend fun Pair<String, String>.request(host: GameHost): String = withContext(Dispatchers.IO) {
+    suspend fun TalkwebForm.request(host: GameHost): String = withContext(Dispatchers.IO) {
         try {
             waiting(host)
             build(host).let {

@@ -1,9 +1,9 @@
 import com.vanniktech.maven.publish.SonatypeHost
 
 plugins {
-    kotlin("jvm") version "2.1.20"
-    kotlin("plugin.serialization") version "2.1.20"
-    id("com.google.devtools.ksp") version "2.1.20-2.0.1"
+    kotlin("jvm") version "2.2.0"
+    kotlin("plugin.serialization") version "2.2.0"
+    id("com.google.devtools.ksp") version "2.2.0-2.0.2"
     id("com.vanniktech.maven.publish") version "0.31.0-rc2"
 }
 
@@ -16,6 +16,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    // multipart/form-data serialization
+    implementation("io.github.edmondantes:simple-kotlinx-serialization-multipart:0.1.0")
 
     implementation(platform("io.ktor:ktor-bom:3.1.3"))
     implementation("io.ktor:ktor-client-core")

@@ -6,9 +6,10 @@ import arrow.optics.copy
 import io.github.smfdrummer.utils.json.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+import network.TalkwebData
+import network.TalkwebForm
 import org.bouncycastle.crypto.engines.RijndaelEngine
 import org.bouncycastle.crypto.modes.CBCBlockCipher
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher
@@ -30,22 +31,8 @@ import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.DESKeySpec
 import javax.crypto.spec.IvParameterSpec
 
-object CryptoDefaults {
-    const val MD5KEY = "talkwebCert"
-    const val APPKEY = "b0b29851-b8a1-4df5-abcb-a8ea158bea20"
-
-    @Volatile
-    var cryptoType = 2
-
-    val cryptoPairs = listOf(
-        "" to "",
-        "`jou*" to ")xoj'",
-        "VxS9Rm7f" to "8gKT_638"
-    )
-}
-
-fun Pair<String, JsonObject>.encryptRequest(): Pair<String, String> = Crypto.Request.encrypt(this)
-fun Pair<String, String>.decryptRequest(): Pair<String, JsonObject> = Crypto.Request.decrypt(this)
+fun TalkwebData.encryptRequest(): TalkwebForm = Crypto.Request.encrypt(this)
+fun TalkwebForm.decryptRequest(): TalkwebData = Crypto.Request.decrypt(this)
 
 fun String.encryptResponse(): String = Crypto.Response.encrypt(this)
 fun String.decryptResponse(): String = Crypto.Response.decrypt(this)
@@ -62,27 +49,35 @@ fun String.decryptTwPay(): String = Crypto.TwPay.decrypt(this)
 fun Int.encryptNumber(): Int = Crypto.Number.encrypt(this)
 fun Int.decryptNumber(): Int = Crypto.Number.decrypt(this)
 
-infix fun String.encryptTwNetwork(data: ByteArray): String = Crypto.TwNetwork(this).encrypt(data)
-infix fun String.decryptTwNetwork(data: String): ByteArray = Crypto.TwNetwork(this).decrypt(data)
-
-fun String.getKey(): ByteArray = Crypto.getKey(this)
-fun String.getIv(): ByteArray = Crypto.getIv(this)
+fun String.getKey(encryptVersion: Int = 2): ByteArray = Crypto.TwNetwork(this, encryptVersion).getKey()
+fun String.getIv(encryptVersion: Int = 2): ByteArray = Crypto.TwNetwork(this, encryptVersion).getIv()
 fun String.getMD5(): String = Crypto.getMD5(this)
 
+
 internal object Crypto {
+    const val MD5KEY = "talkwebCert"
+    const val APPKEY = "b0b29851-b8a1-4df5-abcb-a8ea158bea20"
+
     internal object Request {
-        fun encrypt(data: Pair<String, JsonObject>): Pair<String, String> = data.first to TwNetwork(data.first).encrypt(
-            data.second.toJsonString(JsonFeature.ImplicitNulls).encodeToByteArray()
+        fun encrypt(data: TalkwebData): TalkwebForm = TalkwebForm(
+            req = data.req,
+            e = TwNetwork(data.req, data.ev).encrypt(
+                data.d.toJsonString(JsonFeature.ImplicitNulls).encodeToByteArray()
+            ),
+            ev = data.ev
         )
 
-        fun decrypt(data: Pair<String, String>): Pair<String, JsonObject> =
-            data.first to TwNetwork(data.first).decrypt(data.second).decodeToString()
-                .parseObject(JsonFeature.ImplicitNulls)
+        fun decrypt(data: TalkwebForm): TalkwebData = TalkwebData(
+            req = data.req,
+            d = TwNetwork(data.req, data.ev).decrypt(data.e).decodeToString()
+                .parseObject(JsonFeature.ImplicitNulls),
+            ev = data.ev
+        )
     }
 
     internal object Response {
         fun encrypt(data: String): String {
-            val parse = Json.parseObject(data)
+            val parse = data.parseObject()
             return buildJsonObject {
                 put("i", parse.getString("i"))
                 put("r", parse.getInt("r"))
@@ -91,7 +86,7 @@ internal object Crypto {
         }
 
         fun decrypt(data: String): String = try {
-            val parse = Json.parseObject(data)
+            val parse = data.parseObject()
             TwNetwork(parse.getString("i")!!).decrypt(parse.getString("e")!!).decodeToString()
         } catch (_: Exception) {
             data
@@ -170,7 +165,17 @@ internal object Crypto {
         fun decrypt(data: Int): Int = ((data ushr 13) xor 13) or (data shl 19)
     }
 
-    internal class TwNetwork(private val identifier: String) {
+    internal class TwNetwork(private val identifier: String, private val encryptVersion: Int = 2) {
+        private val fixPairs = arrayOf(
+            "" to "", // 0 -> PLACEHOLDER
+            "YGpvdSo," to "KXhvaic,", // 1 -> OLD
+            "VnhTOVJtN2Y," to "OGdLVF82Mzg," // 2 -> NEW
+        )
+
+        private fun getFixPair() = fixPairs.getOrNull(encryptVersion)?.let { (prefix, suffix) ->
+            prefix.decryptBase64().decodeToString() to suffix.decryptBase64().decodeToString()
+        } ?: error("Unsupported encrypt version: $encryptVersion")
+
         private fun rijndael(data: ByteArray, key: ByteArray, iv: ByteArray, forEncryption: Boolean): ByteArray {
             val rijndael = RijndaelEngine(192)
             val zeroBytePadding = ZeroBytePadding()
@@ -188,25 +193,23 @@ internal object Crypto {
             return output.copyOf(finalLength)
         }
 
+        fun getKey(): ByteArray = getFixPair().let { (prefix, suffix) ->
+            getMD5("$prefix$identifier$suffix").encodeToByteArray()
+        }
+
+        fun getIv(): ByteArray {
+            val key = getKey().decodeToString()
+            val pos = identifier.filter { it.isDigit() }.toIntOrNull() ?: 0
+            val start = pos % 7
+            val end = (start + 24).coerceAtMost(key.length)
+            return key.substring(start, end).encodeToByteArray()
+        }
+
         fun encrypt(data: ByteArray): String =
-            Base64.encrypt(rijndael(data, getKey(identifier), getIv(identifier), true))
+            Base64.encrypt(rijndael(data, getKey(), getIv(), true))
 
         fun decrypt(data: String): ByteArray =
-            rijndael(Base64.decrypt(data), getKey(identifier), getIv(identifier), false)
-    }
-
-    internal fun getKey(identifier: String): ByteArray = with(CryptoDefaults) {
-        val cryptoPair = cryptoPairs[cryptoType]
-        getMD5("${cryptoPair.first}${identifier}${cryptoPair.second}").encodeToByteArray()
-    }
-
-
-    internal fun getIv(identifier: String): ByteArray {
-        val key = getKey(identifier).decodeToString()
-        val pos = identifier.filter { it.isDigit() }.toIntOrNull() ?: 0
-        val start = pos % 7
-        val end = (start + 24).coerceAtMost(key.length)
-        return key.substring(start, end).encodeToByteArray()
+            rijndael(Base64.decrypt(data), getKey(), getIv(), false)
     }
 
     internal fun getMD5(toBeHashed: String): String =

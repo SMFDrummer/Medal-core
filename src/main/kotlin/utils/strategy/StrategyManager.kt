@@ -17,6 +17,7 @@ import io.github.smfdrummer.utils.json.primitive
 import io.github.smfdrummer.utils.strategy.applications.androidCredential
 import io.github.smfdrummer.utils.strategy.applications.iosCredential
 import kotlinx.serialization.json.*
+import network.TalkwebData
 
 suspend fun StrategyConfig.execute(
     context: StrategyContext = StrategyContext()
@@ -91,8 +92,8 @@ class StrategyManager internal constructor(
             val modified = packet.t.mapValues { (_, value) ->
                 renderTemplate(value) { context.resolve(it) }
             }
-            val result = (packet.i to JsonObject(modified))
-                .apply { context.callback?.onPacketStart(this.first, this.second) }
+            val result = TalkwebData(packet.i, JsonObject(modified), packet.ev)
+                .apply { context.callback?.onPacketStart(this.req, this.d) }
                 .sendPacket(packet).bind()
                 .handleResponse(packet).bind()
             if (!result) {
@@ -102,7 +103,7 @@ class StrategyManager internal constructor(
         true
     }
 
-    private suspend fun Pair<String, JsonObject>.sendPacket(packet: StrategyConfig.PacketConfig): Either<StrategyException, JsonObject> =
+    private suspend fun TalkwebData.sendPacket(packet: StrategyConfig.PacketConfig): Either<StrategyException, JsonObject> =
         either {
             encryptRequest().let { request ->
                 catch({ request.request(platformConfig.host) }) { raise(StrategyException.NetworkError(it)) }
