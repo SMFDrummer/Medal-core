@@ -84,3 +84,5 @@ inline fun <reified T> Json.decode(text: String): T = decodeFromString(text)
  * Deserializes this string to an object of type [T] with optional [JsonFeature]s.
  */
 inline fun <reified T> String.fromJson(vararg features: JsonFeature): T = jsonWith(*features).decode(this)
+inline fun <reified T> String.fromJsonOrNull(vararg features: JsonFeature): T? =
+    runCatching { fromJson<T>(*features) }.getOrNull()
