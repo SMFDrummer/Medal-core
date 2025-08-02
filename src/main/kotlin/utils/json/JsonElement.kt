@@ -63,3 +63,14 @@ fun Copy<JsonElement>.path(path: String, transformer: (JsonElement) -> JsonEleme
     JsonPath.path(path).transform(transformer)
 }
 
+fun JsonElement.toJsonString(vararg features: JsonFeature): String = when (this) {
+    is JsonObject -> toJsonString(*features)
+    is JsonArray -> toJsonString(*features)
+    else -> toString()
+}
+
+inline fun <reified T> JsonElement.fromJson(vararg features: JsonFeature): T =
+    jsonWith(*features).decodeFromJsonElement<T>(this)
+
+inline fun <reified T> JsonElement.fromJsonOrNull(vararg features: JsonFeature): T? =
+    runCatching { fromJson<T>(*features) }.getOrNull()

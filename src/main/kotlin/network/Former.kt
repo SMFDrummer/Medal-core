@@ -22,7 +22,8 @@ data class TalkwebData(
     val ev: Int
 ) : JsonSerializable
 
-fun String.parseToTalkwebForm() = Former.decode(encodeToByteArray())
+fun String.parseToTalkwebForm() = Former.decode(trim().plus("\n").encodeToByteArray())
+fun TalkwebForm.encodeToString() = Former.encode(this).decodeToString()
 
 internal object Former {
     const val BOUNDARY = "_{{}}_"

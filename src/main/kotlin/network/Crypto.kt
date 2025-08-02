@@ -5,7 +5,6 @@ package io.github.smfdrummer.network
 import arrow.optics.copy
 import io.github.smfdrummer.utils.json.*
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import network.TalkwebData
@@ -227,5 +226,5 @@ private fun main() {
         path("sd.rsd.wr") { it.toScaledLiteral() }
         path("sd.rsd.lr") { it.toScaledLiteral() }
     }
-    println(Crypto.Gzip.encrypt(Json.encodeToString(result)) == pr)
+    // println(Crypto.Gzip.encrypt(Json.encodeToString(result)) == pr)
 }
