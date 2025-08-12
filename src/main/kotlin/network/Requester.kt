@@ -49,10 +49,11 @@ object Requester {
     private val androidCounter = AtomicInteger(0)
 
     private suspend fun waiting(host: GameHost) {
-        if (host == GameHost.IOS) {
-            delay(interval)
-        }
+//        if (host == GameHost.IOS) {
+//            delay(interval)
+//        }
         // ANDROID 不等待
+        delay(interval)
     }
 
     // 交替构造 ANDROID 的 url
