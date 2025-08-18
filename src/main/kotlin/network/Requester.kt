@@ -16,7 +16,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import network.Former
 import network.TalkwebForm
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.milliseconds
 
 object Requester {
@@ -45,31 +44,12 @@ object Requester {
         }
     }
 
-    // 仅用于 ANDROID 交替请求计数
-    private val androidCounter = AtomicInteger(0)
-
-    private suspend fun waiting(host: GameHost) {
-//        if (host == GameHost.IOS) {
-//            delay(interval)
-//        }
-        // ANDROID 不等待
+    private suspend fun waiting() {
         delay(interval)
     }
 
-    // 交替构造 ANDROID 的 url
-    private fun getAndroidUrl(baseUrl: String): String {
-        val count = androidCounter.getAndIncrement()
-        // 每 30 次循环一次，前 15 次用 baseUrl，后 15 次用 baseUrl/index.php
-        return if ((count % 30) < 15) baseUrl else "$baseUrl/index.php"
-    }
-
     private suspend fun TalkwebForm.build(host: GameHost): HttpResponse {
-        val url = if (host == GameHost.ANDROID) {
-            getAndroidUrl(host.url)
-        } else {
-            host.url
-        }
-        return client.post(url) {
+        return client.post(host.url) {
             header(HttpHeaders.ContentType, ContentType.MultiPart.FormData.withParameter("boundary", Former.BOUNDARY))
             setBody(Former.encode(this@build))
         }
@@ -77,7 +57,7 @@ object Requester {
 
     suspend fun TalkwebForm.request(host: GameHost): String = withContext(Dispatchers.IO) {
         try {
-            waiting(host)
+            waiting()
             build(host).let {
                 when (it.status.value) {
                     200 -> it.bodyAsText()
