@@ -1,7 +1,10 @@
 package io.github.smfdrummer.utils.strategy
 
 import arrow.core.Either
-import arrow.core.raise.*
+import arrow.core.raise.Raise
+import arrow.core.raise.catch
+import arrow.core.raise.either
+import arrow.core.raise.ensure
 import io.github.nomisrev.JsonPath
 import io.github.nomisrev.path
 import io.github.smfdrummer.common.AndroidConfig
@@ -20,23 +23,40 @@ import kotlinx.serialization.json.*
 import network.TalkwebData
 
 suspend fun StrategyConfig.execute(
-    context: StrategyContext = StrategyContext()
-) = with(StrategyManager(this@execute, context)) {
+    context: StrategyContext = StrategyContext(),
+    refresher: (suspend () -> Either<StrategyException, Unit>)? = null,
+) = with(StrategyManager(this@execute, context, refresher)) {
     executePackets()
 }
 
 class StrategyManager internal constructor(
     private val strategyConfig: StrategyConfig,
-    private val context: StrategyContext
+    private val context: StrategyContext,
+    private val refresher: (suspend () -> Either<StrategyException, Unit>)? = null,
 ) {
     internal suspend fun executePackets(startIndex: Int = 0): Either<StrategyException, Boolean> = either {
-        for (packet in strategyConfig.packets.drop(startIndex)) {
-            if (packet.repeat < 1) continue
+        val packets = strategyConfig.packets
+        var index = startIndex
+        while (index < packets.size) {
+            val packet = packets[index]
+            if (packet.repeat < 1) {
+                index++
+                continue
+            }
 
             val success = handleRepeat(packet).fold(
                 {
                     when (it) {
-                        is StrategyException.CredentialExpired,
+                        is StrategyException.CredentialExpired -> {
+                            if (refresher != null) {
+                                refresher.invoke().bind()
+                                return@either executePackets(index).bind()
+                            } else {
+                                context.callback?.onPacketFailure(packet.i, it)
+                                false
+                            }
+                        }
+
                         is StrategyException.NetworkError,
                         is StrategyException.DecryptionError,
                         is StrategyException.UnexpectedResponseCode -> {
@@ -80,6 +100,7 @@ class StrategyManager internal constructor(
                     return@either false
                 }
             }
+            index++
         }
         true
     }
@@ -193,46 +214,29 @@ suspend fun StrategyConfig.executeWith(
     isRandom: Boolean = false,
     context: StrategyContext = StrategyContext()
 ): Either<StrategyException, Boolean> = either {
-    if (!context.variables.containsKey("pi") &&
-        !context.variables.containsKey("sk") &&
-        !context.variables.containsKey("ui") &&
-        userProvider != null
-    ) {
-        val (userId, token) = userProvider.fetch()
+    suspend fun refreshCredential(): Either<StrategyException, Unit> = either {
+        if (userProvider != null) {
+            val (uid, token) = userProvider.fetch()
 
-        when (platformConfig) {
-            is AndroidConfig -> {
-                androidCredential(userId, token).execute(context).bind()
+            when (platformConfig) {
+                is AndroidConfig ->
+                    androidCredential(uid, token).execute(context).bind()
+
+                is IOSConfig ->
+                    iosCredential(uid, isRandom).execute(context).bind()
             }
 
-            is IOSConfig -> {
-                iosCredential(userId, isRandom).execute(context).bind()
+            ensure(context.hasCredential()) {
+                StrategyException.CredentialRefreshError(
+                    IllegalStateException("凭据获取失败")
+                )
             }
         }
     }
 
-    execute(context).fold(
-        { error ->
-            when (error) {
-                is StrategyException.CredentialExpired -> {
-                    ensureNotNull(userProvider) { error }
-                    val (userId, token) = userProvider.fetch()
-                    when (platformConfig) {
-                        is AndroidConfig -> {
-                            androidCredential(userId, token).execute(context).bind()
-                        }
+    if (!context.hasCredential()) {
+        refreshCredential().bind()
+    }
 
-                        is IOSConfig -> {
-                            iosCredential(userId, isRandom).execute(context).bind()
-                        }
-                    }
-
-                    execute(context).bind()
-                }
-
-                else -> raise(error)
-            }
-        },
-        { success -> success }
-    )
+    return execute(context, ::refreshCredential)
 }

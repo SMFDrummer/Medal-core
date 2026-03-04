@@ -3,6 +3,7 @@ package io.github.smfdrummer.utils.strategy
 import io.github.nomisrev.JsonPath
 import io.github.nomisrev.path
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
@@ -38,4 +39,8 @@ class StrategyContext {
             } ?: JsonPrimitive("__MISSING_${expression}__")
         } ?: JsonPrimitive(expression)
     }
+
+    fun hasCredential(): Boolean =
+        variables.containsKey("pi") && variables.containsKey("sk") && variables.containsKey("ui") &&
+                variables["pi"] != JsonNull && variables["sk"] != JsonNull && variables["ui"] != JsonNull
 }
