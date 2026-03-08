@@ -18,3 +18,8 @@ enum class TalkwebHost(val url: String) {
     MODIFY_PASSWORD("http://tgpay.talkyun.com.cn/tw-sdk/sdk-api/user/modifyPassWord"),
 
 }
+
+enum class Game4399Host(val url: String) {
+    STATE("https://m.4399api.com/openapi/oauth-callback.html?gamekey=46619&game_key=124642"),
+    LOGIN("https://ptlogin.4399.com/oauth2/loginAndAuthorize.do?channel=&sdk=op&sdk_version=3.14.5.577"),
+}

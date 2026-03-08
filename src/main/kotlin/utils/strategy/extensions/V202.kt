@@ -22,7 +22,7 @@ fun StrategyBuilder.V202(userId: String? = null, token: String? = null) = packet
               "appId": "${platformConfig.channel.appId}",
               "appVersion": "1.0",
               "channelId": "${platformConfig.channel.channelId}",
-              "channelSdkVersion": "dj2.0-2.0.0",
+              "channelSdkVersion": "${platformConfig.channel.channelSdkVersion}",
               "talkwebSdkVersion": "3.0.0"
             },
             "li": "84b8aa5c65c0d32b4f8ac2f5f0c0592f",

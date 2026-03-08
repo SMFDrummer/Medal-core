@@ -114,7 +114,7 @@ object Requester {
                 delay(650.milliseconds)
                 val response = client.post(urlString, block)
                 // 检测响应状态，标记错误
-                if (response.status.value !in 200..299) {
+                if (response.status.value !in 200..302) {
                     isError = true
                 }
                 return@withContext response
