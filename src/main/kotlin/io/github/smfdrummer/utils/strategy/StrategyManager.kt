@@ -11,6 +11,7 @@ import io.github.smfdrummer.common.AndroidConfig
 import io.github.smfdrummer.common.IOSConfig
 import io.github.smfdrummer.common.platformConfig
 import io.github.smfdrummer.network.Requester.request
+import io.github.smfdrummer.network.TalkwebData
 import io.github.smfdrummer.network.UserProvider
 import io.github.smfdrummer.network.decryptResponse
 import io.github.smfdrummer.network.encryptRequest
@@ -20,7 +21,6 @@ import io.github.smfdrummer.utils.json.primitive
 import io.github.smfdrummer.utils.strategy.applications.androidCredential
 import io.github.smfdrummer.utils.strategy.applications.iosCredential
 import kotlinx.serialization.json.*
-import network.TalkwebData
 
 suspend fun StrategyConfig.execute(
     context: StrategyContext = StrategyContext(),

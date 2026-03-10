@@ -1,12 +1,12 @@
-package network
+package io.github.smfdrummer.network
 
 import io.github.edmondantes.multipart.serialization.MultipartForm
 import io.github.edmondantes.multipart.serialization.config.MultipartFormConfig
+import io.github.smfdrummer.utils.json.JsonSerializable
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.json.JsonObject
-import utils.json.JsonSerializable
 
 @Serializable
 data class TalkwebForm(

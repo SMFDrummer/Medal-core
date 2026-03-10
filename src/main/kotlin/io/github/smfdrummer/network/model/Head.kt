@@ -4,7 +4,6 @@ import io.github.smfdrummer.common.platformConfig
 import io.github.smfdrummer.utils.json.JsonFeature
 import io.github.smfdrummer.utils.json.jsonWith
 import kotlinx.serialization.Serializable
-import kotlin.getValue
 
 @Serializable
 data class Head(

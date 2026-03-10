@@ -5,8 +5,6 @@ package io.github.smfdrummer.network
 import io.github.smfdrummer.utils.json.*
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-import network.TalkwebData
-import network.TalkwebForm
 import org.bouncycastle.crypto.engines.RijndaelEngine
 import org.bouncycastle.crypto.modes.CBCBlockCipher
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher

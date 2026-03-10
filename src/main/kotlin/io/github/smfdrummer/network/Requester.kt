@@ -14,8 +14,6 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import network.Former
-import network.TalkwebForm
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 

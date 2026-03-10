@@ -1,7 +1,5 @@
-package utils.json
+package io.github.smfdrummer.utils.json
 
-import io.github.smfdrummer.utils.json.JsonFeature
-import io.github.smfdrummer.utils.json.jsonWith
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer

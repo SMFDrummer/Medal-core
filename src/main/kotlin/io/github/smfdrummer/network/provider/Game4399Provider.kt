@@ -1,4 +1,4 @@
-package network.provider
+package io.github.smfdrummer.network.provider
 
 import io.github.smfdrummer.enums.Game4399Host
 import io.github.smfdrummer.network.Requester

@@ -1,4 +1,4 @@
-package network.service
+package io.github.smfdrummer.network.service
 
 import io.github.smfdrummer.enums.TalkwebHost
 import io.github.smfdrummer.network.Requester
@@ -7,21 +7,18 @@ import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
-object ModifyPassword {
+internal object ModifyPassword {
     suspend operator fun invoke(token: String, userId: String, oldPassword: String, newPassword: String): Boolean =
         Requester.post(
             TalkwebHost.MODIFY_PASSWORD.url
         ) {
-            contentType(ContentType.Application.FormUrlEncoded)
             setBody(
                 FormDataContent(
-                    Parameters.build {
-                        listOf(
-                            "token" to token,
-                            "userId" to userId,
-                            "oldPassword" to oldPassword,
-                            "newPassword" to newPassword
-                        ).forEach { (key, value) -> append(key, value) }
+                    parameters {
+                        append("token", token)
+                        append("userId", userId)
+                        append("oldPassword", oldPassword)
+                        append("newPassword", newPassword)
                     }
                 )
             )
