@@ -11,6 +11,7 @@ enum class TalkwebHost(val url: String) {
     GET_LATEST_VERSION("https://pvz2.ditwan.cn/backend/api/latest_version/get_latest_version"),
     ABTEST("http://cert.talkyun.com.cn/ad-api/cert/abtest"),
     LOGIN("http://tgpay.talkyun.com.cn/tw-sdk/sdk-api/user/login"),
+    LOGIN_NEW("https://tgpay.talkyun.com.cn/tw-sdk/sdk-api/user/loginNew"),
     RECORD_TERMINAL("http://tgpay.talkyun.com.cn/tw-sdk/sdk-api/user/recordTerminal"),
     UPDATE_USER_PHONE("http://cert.talkyun.com.cn/ad-api/cert/updateuserphone"),
     GEN_VERIFY_SMS("http://tgpay.talkyun.com.cn/tw-sdk/sdk-api/user/genVerifySms"),

@@ -17,13 +17,13 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 
-internal object Login {
-    suspend operator fun invoke(phoneOrUserId: String, passwordMD5: String): Pair<String, String> =
-        Requester.post(TalkwebHost.LOGIN.url) {
+internal object LoginNew {
+    suspend operator fun invoke(phoneOrUserId: String, password: String): Pair<String, String> =
+        Requester.post(TalkwebHost.LOGIN_NEW.url) {
             setBody(
                 FormDataContent(
                     parameters {
-                        val loginString = Json.encodeToString(Login(password = passwordMD5, phone = phoneOrUserId))
+                        val loginString = Json.encodeToString(Login(password = password, phone = phoneOrUserId))
                         append("head", headString.encryptTwPay())
                         append("login", loginString.encryptTwPay())
                         append("md5", getMD5(loginString + APPKEY))
@@ -34,7 +34,7 @@ internal object Login {
             when (it.status.value) {
                 200 -> {
                     val parse = it.bodyAsText().decryptTwPay().parseObject()
-                    if (parse.getString("resultCode") == "0000") {
+                    if (parse.getString("resultCode") == "6666") {
                         with(parse.getString("content")!!.decryptTwPay().parseObject()) {
                             getInt("userId")!!.toString() to getString("token")!!
                         }
@@ -46,9 +46,4 @@ internal object Login {
         }
 }
 
-@Deprecated(
-    message = "已更换新https登陆",
-    replaceWith = ReplaceWith("loginNew(phoneOrUserId, password)"),
-    level = DeprecationLevel.ERROR
-)
-suspend fun login(phoneOrUserId: String, passwordMD5: String): Pair<String, String> = Login(phoneOrUserId, passwordMD5)
+suspend fun loginNew(phoneOrUserId: String, password: String): Pair<String, String> = LoginNew(phoneOrUserId, password)
