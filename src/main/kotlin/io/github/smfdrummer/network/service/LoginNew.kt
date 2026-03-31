@@ -34,7 +34,8 @@ internal object LoginNew {
             when (it.status.value) {
                 200 -> {
                     val parse = it.bodyAsText().decryptTwPay().parseObject()
-                    if (parse.getString("resultCode") == "6666") {
+                    val resultCode = parse.getString("resultCode")
+                    if (resultCode == "0000" || resultCode == "6666") {
                         with(parse.getString("content")!!.decryptTwPay().parseObject()) {
                             getInt("userId")!!.toString() to getString("token")!!
                         }
